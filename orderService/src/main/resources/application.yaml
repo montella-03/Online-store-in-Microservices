@@ -1,0 +1,49 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: Edu19-94
+    url: jdbc:mysql://localhost:3306/orders
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: OrderService
+  config:
+    import: configserver:http://localhost:9296
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-05045406.okta.com/oauth2/default
+      client:
+        registration:
+          internal-client:
+            provider: okta
+            authorization-grant-type: client-credentials
+            scope: internal
+            client-id: 0oa90tl3zcrtCOMtX5d7
+            client-secret: X78z_4JpmJc8E426NdnQVUYfR89wO1-2J_4hVTyK
+        provider:
+          okta:
+            issuer-uri: https://dev-05045406.okta.com/oauth2/default
+
+
+  management:
+    tracing:
+      sampling:
+        probability: 1.0
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuit:
+        failure-rate-threshold: 1
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 90s
+        permitted-number-of-calls-in-half-open-state: 2
